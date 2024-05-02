@@ -28,11 +28,11 @@ int main(int argc, char const *argv[])
     {
         auto box = detection.box;
         auto classId = detection.class_id;
-        const auto color = colors[classId % colors.size()];
+        const auto& color = colors[classId % colors.size()];
         cv::rectangle(image, box, color, 3);
 
         cv::rectangle(image, cv::Point(box.x, box.y - 20), cv::Point(box.x + box.width, box.y), color, cv::FILLED);
-        cv::putText(image, class_list[classId].c_str(), cv::Point(box.x, box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
+        cv::putText(image, class_list[classId], cv::Point(box.x, box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
     }
 
     // As giving fixed value for width, and protecting original image ratio, output resolution declares in here.
