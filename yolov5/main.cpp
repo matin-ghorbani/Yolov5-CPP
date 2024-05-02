@@ -5,11 +5,11 @@
 using namespace std;
 
 
-int main(int argc, char const *argv[])
+int main(int argc, const char *argv[])
 {
     std::vector<std::string> class_list = load_class_list("../assets/classes.txt");
 
-    cv::Mat image = cv::imread("../assets/images/bus.jpg"); // Provide the path to your input image
+    cv::Mat image = cv::imread(argv[1]); // Provide the path to your input image
     if (image.empty())
     {
         std::cerr << "Error loading image\n";
@@ -19,7 +19,7 @@ int main(int argc, char const *argv[])
     bool is_cuda = argc > 1 && strcmp(argv[1], "cuda") == 0;
 
     cv::dnn::Net net;
-    net = load_net("../assets/models/yolov5s.onnx", is_cuda);
+    net = load_net(argv[2], is_cuda);
 
     std::vector<Detection> output;
     detect(image, net, output, class_list);
