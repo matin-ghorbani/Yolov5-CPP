@@ -5,13 +5,11 @@
 using namespace std;
 
 
-int main(int argc, const char *argv[])
-{
+int main(int argc, const char *argv[]) {
     std::vector<std::string> class_list = load_class_list("../assets/classes.txt");
 
     cv::Mat image = cv::imread(argv[1]); // Provide the path to your input image
-    if (image.empty())
-    {
+    if (image.empty()) {
         std::cerr << "Error loading image\n";
         return -1;
     }
@@ -24,15 +22,15 @@ int main(int argc, const char *argv[])
     std::vector<Detection> output;
     detect(image, net, output, class_list);
 
-    for (const auto &detection : output)
-    {
+    for (const auto &detection: output) {
         auto box = detection.box;
         auto classId = detection.class_id;
-        const auto& color = colors[classId % colors.size()];
+        const auto &color = colors[classId % colors.size()];
         cv::rectangle(image, box, color, 3);
 
         cv::rectangle(image, cv::Point(box.x, box.y - 20), cv::Point(box.x + box.width, box.y), color, cv::FILLED);
-        cv::putText(image, class_list[classId], cv::Point(box.x, box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0));
+        cv::putText(image, class_list[classId], cv::Point(box.x, box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5,
+                    cv::Scalar(0, 0, 0));
     }
 
     // As giving fixed value for width, and protecting original image ratio, output resolution declares in here.
