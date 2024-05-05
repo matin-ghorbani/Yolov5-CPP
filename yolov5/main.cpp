@@ -6,44 +6,28 @@ using namespace std;
 
 
 int main(int argc, const char *argv[]) {
-    std::vector<std::string> class_list = load_class_list("../assets/classes.txt");
+    bool is_cuda = argc > 1 && strcmp(argv[1], "cuda") == 0;
+    Yolov5Detector detector("../assets/models/yolov5s.onnx", "../assets/classes.txt", is_cuda);
 
-    cv::Mat image = cv::imread(argv[1]); // Provide the path to your input image
+    cv::Mat image = cv::imread(argv[1]);
     if (image.empty()) {
         std::cerr << "Error loading image\n";
         return -1;
     }
 
-    bool is_cuda = argc > 1 && strcmp(argv[1], "cuda") == 0;
+    Yolov5Detector::DetectionData output;
+    output = detector.detect(image, true);
 
-    cv::dnn::Net net;
-    net = load_net(argv[2], is_cuda);
+    cv::Mat resultImg = output.image;
+    vector<Yolov5Detector::Detection> detections = output.detections;
+    
 
-    std::vector<Detection> output;
-    detect(image, net, output, class_list);
-
-    for (const auto &detection: output) {
-        auto box = detection.box;
-        auto classId = detection.class_id;
-        const auto &color = colors[classId % colors.size()];
-        cv::rectangle(image, box, color, 3);
-
-        cv::rectangle(image, cv::Point(box.x, box.y - 20), cv::Point(box.x + box.width, box.y), color, cv::FILLED);
-        cv::putText(image, class_list[classId], cv::Point(box.x, box.y - 5), cv::FONT_HERSHEY_SIMPLEX, 0.5,
-                    cv::Scalar(0, 0, 0));
-    }
 
     // As giving fixed value for width, and protecting original image ratio, output resolution declares in here.
     int targetWidth = 800;
     int targetHeight = static_cast<int>(image.rows * static_cast<float>(targetWidth) / image.cols);
 
-    cv::Size newSize(targetWidth, targetHeight);
-
-    // Resize image
-    cv::Mat resized_image;
-    cv::resize(image, resized_image, newSize);
-
-    cv::imshow("output", resized_image);
+    cv::imshow("result image", resultImg);
     cv::waitKey(0);
 
     return 0;
