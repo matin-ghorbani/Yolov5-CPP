@@ -2,3 +2,5 @@
 *.onnx
 build/
 .idea/
+test.cpp
+.vscode/
