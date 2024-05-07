@@ -4,3 +4,5 @@ build/
 .idea/
 test.cpp
 .vscode/
+tests/
+*.mp4
