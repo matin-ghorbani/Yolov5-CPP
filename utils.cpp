@@ -117,7 +117,11 @@ Yolov5Detector::DetectionData Yolov5Detector::detect(cv::Mat image, const bool d
 
     DetectionData ret;
     ret.detections = output;
-    ret.image = this->draw(image, output);
+    if (draw)
+    {
+        image = this->draw(image, output);
+    }
+    ret.image = image;
 
     return ret;
 }
